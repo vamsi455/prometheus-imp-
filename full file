@@ -1,0 +1,55 @@
+mkdir  prometheus
+cd prometheus
+wget https://github.com/prometheus/prometheus/releases/download/v2.43.0-rc.0/prometheus-2.43.0-rc.0.linux-amd64.tar.gz
+tar xvzf prometheus-2.43.0-rc.0.linux-amd64.tar.gz
+mv prometheus-2.43.0-rc.0.linux-amd64 prometheus
+cd prometheus
+./prometheus
+http://3.144.14.19:9090/metrics
+download node exporter
+mkdir nodeexporter
+cd nodeexporter
+wget  https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz
+tar -xvzf node_exporter-1.5.0.linux-amd64.tar.gz
+mv node_exporter-1.5.0.linux-amd64 node_exporter
+cd node_exporter
+./node_exporter
+cd prometheus
+vi exporter-config.yml
+
+global:
+   scrape_interval: 15s
+
+scrape_configs:
+   - job_name: node
+     static_configs:
+        - targets: ['localhost:9100','100.0.0.3:9100'] 
+
+./prometheus --config.file=exporter-config.yml
+steps to install grafana
+
+wget https://dl.grafana.com/enterprise/release/grafana-enterprise-10.1.5.linux-amd64.tar.gz
+tar -zxvf grafana-enterprise-10.1.5.linux-amd64.tar.gz
+
+sudo apt-get install -y apt-transport-https
+sudo apt-get install -y software-properties-common wget
+wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+
+echo "deb https://packages.grafana.com/enterprise/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+
+sudo apt-get update
+sudo apt-get install grafana-enterprise
+
+sudo systemctl daemon-reload
+sudo systemctl start grafana-server
+sudo systemctl status grafana-server
+
+sudo systemctl enable grafana-server.service
+ 
+
+
+
+
+
+ 
+
